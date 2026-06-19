@@ -361,7 +361,7 @@ Content-Type: application/json
   "session_guid": "00000000-0000-0000-0000-000000000000",
   "date": "2026-05-15",
   "covers": 4,
-  "return_totals": true,
+  "return_totals": false,
   "booking_guid": null,
   "table_ids": [],
   "override_duration": null
