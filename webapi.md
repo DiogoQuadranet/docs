@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./assets/dbx-logo.png" alt="DBX Logo" width="300">
+</div>
+
 # DBX Web API Documentation
 
 ## Base URL
@@ -121,7 +125,7 @@ Content-Type: application/json
 ### 4. Get Booking
 **Endpoint:** `POST /api/DBXWebApi/GetBooking`
 
-**Description:** Retrieves details of a specific booking including deposit information.
+**Description:** Retrieves details of a specific booking including deposit information and status metadata.
 
 **Request:**
 ```json
@@ -136,10 +140,67 @@ Content-Type: application/json
 {
   "succeeded": true,
   "error_message": "",
-  "booking_id": 12345,
+  "surname": "Doe",
+  "forename": "John",
+  "booking_message": "Birthday dinner",
+  "session_guid": "00000000-0000-0000-0000-000000000000",
+  "session_name": "Dinner Service",
+  "booking_datetime": "2026-05-15T19:00:00",
+  "booking_datetime_raw": "2026-05-15T19:00:00",
+  "covers": 4,
+  "promotion": "Summer Special",
+  "site": "Main Restaurant",
+  "location": "Main Floor",
+  "client": "Restaurant Group Name",
+  "loyalty_site_id": 123,
+  "loyalty_brand_id": 45,
+  "duration": 90,
+  "deposit_description": "A deposit is required",
+  "deposit_name": "Deposit Required",
   "deposit_due": 50.00,
-  "deposit_paid": 25.00,
-  "deposit_outstanding": 25.00
+  "deposit_per_cover": true,
+  "deposit_rule_id": 1,
+  "deposit_type": 2,
+  "deposit_paid": 0.00,
+  "deposit_outstanding": 50.00,
+  "preauth_required": false,
+  "preauth_taken": false,
+  "booking_promotion_guid": "00000000-0000-0000-0000-000000000000",
+  "booking_promotion_label": "Summer Special",
+  "booking_promotion_description": "20% off for groups of 4+",
+  "booking_promotion_colour": "#FF5733",
+  "booking_promotion_status": 1,
+  "confirmation_status": 1,
+  "confirmation_status_label": "Confirmed",
+  "friendly_duration": "1h 30m",
+  "customer_message": "Birthday celebration",
+  "guest_request": "Window table if possible",
+  "booking_tags": [
+    {
+      "booking_booking_tag_guid": "00000000-0000-0000-0000-000000000000",
+      "booking_tag_guid": "00000000-0000-0000-0000-000000000000",
+      "booking_tag_name": "Birthday",
+      "guest_name": "John Doe",
+      "added_online": true,
+      "booking_tag_group_name": "Occasions",
+      "background_colour": "#FF5733",
+      "text_colour": "#FFFFFF"
+    }
+  ],
+  "customer_tags": [
+    {
+      "customer_customer_tag_guid": "00000000-0000-0000-0000-000000000000",
+      "customer_tag_guid": "00000000-0000-0000-0000-000000000000",
+      "customer_tag_name": "Platinum",
+      "added_online": true,
+      "customer_tag_group_name": "VIP Levels",
+      "background_colour": "#FFD700",
+      "text_colour": "#000000"
+    }
+  ],
+  "order_guid": [
+    "00000000-0000-0000-0000-000000000000"
+  ]
 }
 ```
 
@@ -171,12 +232,15 @@ Content-Type: application/json
   "site": "Main Restaurant",
   "time_zone": "Europe/London",
   "start_of_day": "06:00:00",
-  "loyalty_site_id": "LOYALTY001",
+  "default_start_of_day": false,
+  "loyalty_site_id": 123,
   "locations": [
     {
-      "location_id": 1,
-      "location_name": "Main Floor",
-      "location_guid": "00000000-0000-0000-0000-000000000000"
+      "location_guid": "00000000-0000-0000-0000-000000000000",
+      "location": "Main Floor",
+      "advanced_months": 6,
+      "max_covers": 30,
+      "cut_off": 30
     }
   ]
 }
@@ -242,6 +306,7 @@ Content-Type: application/json
   "succeeded": true,
   "error_message": "",
   "client": "Restaurant Group Name",
+  "loyalty_brand_id": 45,
   "sites": [
     {
       "site_id": 1,
@@ -844,6 +909,25 @@ All error responses include:
   "error_message": "Description of error"
 }
 ```
+
+### Common Extra Fields Returned by Individual Endpoints
+Depending on the endpoint, responses may also include:
+- `error_code`
+- `booking_guid`
+- `pending_booking_guid`
+- `deposit_due`
+- `deposit_paid`
+- `deposit_outstanding`
+- `deposit_name`
+- `deposit_description`
+- `deposit_per_cover`
+- `deposit_per_cover_amount`
+- `preauth_required`
+- `booking_tags`
+- `customer_tags`
+- `confirmation_status`
+- `confirmation_status_label`
+- `order_guid`
 
 ---
 
