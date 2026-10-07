@@ -1,0 +1,11 @@
+<svg width="900" height="180" viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DBX Logo">
+  <rect width="900" height="180" fill="#000000"/>
+
+  <!-- Maroon circular mark -->
+  <g transform="translate(736 90)">
+    <circle cx="0" cy="0" r="68" fill="#8B003F"/>
+    <!-- cut-out wedge to suggest the Q / circular brand mark -->
+    <path d="M46 28 L92 28 L92 80 L46 80 L46 28 Z" fill="#000000"/>
+    <path d="M-18 0 L58 0 L58 68 L-18 68 Z" fill="#000000" opacity="0.96"/>
+  </g>
+</svg>
