@@ -1,0 +1,430 @@
+{
+  "info": {
+    "name": "DBX WebApi Collection",
+    "description": "Basic Postman collection for DBXWebApiController endpoints and request bodies.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/Test",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "Test"]
+        }
+      }
+    },
+    {
+      "name": "KeepBookingAlive",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"pending_booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"keep_alive_minutes\": 15\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/KeepBookingAlive",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "KeepBookingAlive"]
+        }
+      }
+    },
+    {
+      "name": "DeleteBooking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"suppress_email\": false,\n  \"suppress_sms\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/DeleteBooking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "DeleteBooking"]
+        }
+      }
+    },
+    {
+      "name": "GetPromotions",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"date\": \"2026-05-15\",\n  \"covers\": 4,\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetPromotions",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetPromotions"]
+        }
+      }
+    },
+    {
+      "name": "GetBooking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetBooking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetBooking"]
+        }
+      }
+    },
+    {
+      "name": "GetLocations",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"site_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetLocations",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetLocations"]
+        }
+      }
+    },
+    {
+      "name": "GetPreAuthDetails",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"site_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetPreAuthDetails",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetPreAuthDetails"]
+        }
+      }
+    },
+    {
+      "name": "GetSites",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetSites",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetSites"]
+        }
+      }
+    },
+    {
+      "name": "GetSessions",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"date\": \"2026-05-15\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetSessions",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetSessions"]
+        }
+      }
+    },
+    {
+      "name": "GetSessionsRange",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"date_from\": \"2026-05-15\",\n  \"date_to\": \"2026-05-22\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetSessionsRange",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetSessionsRange"]
+        }
+      }
+    },
+    {
+      "name": "GetAvailability",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"date\": \"2026-05-15\",\n  \"covers\": 4,\n  \"return_totals\": false,\n  \"booking_guid\": null,\n  \"table_ids\": [],\n  \"override_duration\": null\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetAvailability",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetAvailability"]
+        }
+      }
+    },
+    {
+      "name": "MakeBooking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_datetime\": \"2026-05-15T19:00:00\",\n  \"covers\": 4,\n  \"booking_source\": \"Website\",\n  \"promotion_guid\": null,\n  \"override_duration\": null,\n  \"booking_guid_list\": []\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/MakeBooking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "MakeBooking"]
+        }
+      }
+    },
+    {
+      "name": "AddCustomer",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"pending_booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"location_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_datetime\": \"2026-05-15T19:00:00\",\n  \"covers\": 4,\n  \"customer_details\": {\n    \"forename\": \"John\",\n    \"surname\": \"Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"07700900000\",\n    \"consent\": 1,\n    \"customer_message\": \"Birthday celebration\",\n    \"member_id\": null,\n    \"swipe_id\": null,\n    \"booking_guid\": null,\n    \"customer_tag_guids\": [\n      \"00000000-0000-0000-0000-000000000000\"\n    ]\n  },\n  \"booking_message\": \"Special occasion\",\n  \"guest_request\": \"Window table if possible\",\n  \"booking_source\": \"Website\",\n  \"promotion_guid\": null,\n  \"booking_tags\": [\n    {\n      \"booking_tag_guid\": \"00000000-0000-0000-0000-000000000000\",\n      \"guest_name\": \"John Doe\"\n    }\n  ],\n  \"deposit_amount\": 0,\n  \"deposit_reference\": null,\n  \"deposit_processor\": null,\n  \"advert\": null,\n  \"referrer\": null,\n  \"promotion\": null,\n  \"suppress_email\": false,\n  \"suppress_sms\": false,\n  \"preauth_token\": null\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/AddCustomer",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "AddCustomer"]
+        }
+      }
+    },
+    {
+      "name": "UpdateCustomer",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"customer_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"consent\": 1,\n  \"forename\": \"Jane\",\n  \"surname\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"07700900001\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/UpdateCustomer",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "UpdateCustomer"]
+        }
+      }
+    },
+    {
+      "name": "UpdateBooking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_datetime\": \"2026-05-15T20:00:00\",\n  \"covers\": 5,\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_message\": \"Updated note\",\n  \"replace_booking_message\": false,\n  \"booking_source\": \"Website\",\n  \"promotion_guid\": null,\n  \"guest_request\": \"Early seating preferred\",\n  \"replace_guest_request\": false,\n  \"booking_tags\": [],\n  \"customer_tags\": [],\n  \"deposit_amount\": 25.0,\n  \"deposit_reference\": \"DEP123\",\n  \"deposit_processor\": \"Stripe\",\n  \"preauth_token\": \"token123\",\n  \"suppress_email\": false,\n  \"suppress_sms\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/UpdateBooking",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "UpdateBooking"]
+        }
+      }
+    },
+    {
+      "name": "UpdateBooking2",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_datetime\": \"2026-05-15T20:00:00\",\n  \"covers\": 5,\n  \"session_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_message\": \"Updated note\",\n  \"replace_booking_message\": false,\n  \"booking_source\": \"Website\",\n  \"promotion_guid\": null,\n  \"guest_request\": \"Early seating preferred\",\n  \"replace_guest_request\": false,\n  \"booking_tags\": [],\n  \"customer_tags\": [],\n  \"deposit_amount\": 25.0,\n  \"deposit_reference\": \"DEP123\",\n  \"deposit_processor\": \"Stripe\",\n  \"preauth_token\": \"token123\",\n  \"suppress_email\": false,\n  \"suppress_sms\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/UpdateBooking2",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "UpdateBooking2"]
+        }
+      }
+    },
+    {
+      "name": "UpdateBookingConfirmationStatus",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"confirmation_status\": 1,\n  \"suppress_email\": false,\n  \"suppress_sms\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/UpdateBookingConfirmationStatus",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "UpdateBookingConfirmationStatus"]
+        }
+      }
+    },
+    {
+      "name": "AddDeposit",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"booking_guid\": \"00000000-0000-0000-0000-000000000000\",\n  \"deposit_amount\": 50.0,\n  \"deposit_reference\": \"DEP123456\",\n  \"deposit_processor\": \"Stripe\",\n  \"suppress_email\": false,\n  \"suppress_sms\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/AddDeposit",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "AddDeposit"]
+        }
+      }
+    },
+    {
+      "name": "GetBookingTags",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetBookingTags",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetBookingTags"]
+        }
+      }
+    },
+    {
+      "name": "GetCustomerTags",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetCustomerTags",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetCustomerTags"]
+        }
+      }
+    },
+    {
+      "name": "GetBookingSources",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"00000000-0000-0000-0000-000000000000\",\n  \"client_guid\": \"00000000-0000-0000-0000-000000000000\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/GetBookingSources",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "GetBookingSources"]
+        }
+      }
+    },
+    {
+      "name": "DeliverectOrder - OrderSync",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"OrderSync\",\n  \"siteId\": 123,\n  \"clientId\": 456,\n  \"recordId\": 789\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/DeliverectOrder",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "DeliverectOrder"]
+        }
+      }
+    },
+    {
+      "name": "DeliverectOrder - ProductSync",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"ProductSync\",\n  \"siteId\": 123,\n  \"clientId\": 456,\n  \"recordId\": 789\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/DBXWebApi/DeliverectOrder",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "DBXWebApi", "DeliverectOrder"]
+        }
+      }
+    }
+  ]
+}
