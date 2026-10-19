@@ -21,17 +21,16 @@ Content-Type: application/json
 
 ## Endpoints
 
-### 1. Keep Booking Alive
-**Endpoint:** `POST /api/DBXWebApi/KeepBookingAlive`
+### 1. Get Sites
+**Endpoint:** `POST /api/DBXWebApi/GetSites`
 
-**Description:** Extends the time for a booking that is currently in progress.
+**Description:** Retrieves all available sites for a client.
 
 **Request:**
 ```json
 {
   "api_key": "00000000-0000-0000-0000-000000000000",
-  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
-  "keep_alive_minutes": 15
+  "client_guid": "00000000-0000-0000-0000-000000000000"
 }
 ```
 
@@ -39,29 +38,215 @@ Content-Type: application/json
 ```json
 {
   "succeeded": true,
-  "error_message": ""
+  "error_message": "",
+  "client": "Restaurant Group Name",
+  "loyalty_brand_id": 45,
+  "sites": [
+    {
+      "site_id": 1,
+      "site_name": "London Branch",
+      "site_guid": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
 }
 ```
 
 **Error Responses:**
 - `"Invalid api_key"` - API key validation failed
-- `"Booking not found"` - Booking GUID doesn't exist
-- `"Booking already deleted"` - Booking status is 255 or not Booked/InProgress
-- `"Booking not in progress"` - Booking status is not InProgress
-- `"Failed to keep booking alive"` - Database update failed
+- `"Invalid Client"` - Client GUID not found
 
 ---
 
-### 2. Delete Booking
-**Endpoint:** `POST /api/DBXWebApi/DeleteBooking`
+### 2. Get Sessions
+**Endpoint:** `POST /api/DBXWebApi/GetSessions`
 
-**Description:** Deletes a pending or in-progress booking.
+**Description:** Retrieves available sessions for a specific date and location.
 
 **Request:**
 ```json
 {
   "api_key": "00000000-0000-0000-0000-000000000000",
-  "booking_guid": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "date": "2026-05-15"
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "day_message": "Busy evening expected",
+  "session_list": [
+    {
+      "session_guid": "00000000-0000-0000-0000-000000000000",
+      "session_friendly_name": "Lunch Service",
+      "first_time_slot": "12:00:00",
+      "last_time_slot": "14:30:00",
+      "session_message": "Lunch only on weekdays"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"Location GUID: [guid] location id: [id]. Location is not present or doesnt allow web."` - Invalid location
+- `"No Sessions"` - No sessions available for date
+
+---
+
+### 3. Get Availability
+**Endpoint:** `POST /api/DBXWebApi/GetAvailability`
+
+**Description:** Retrieves available time slots for a booking.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "session_guid": "00000000-0000-0000-0000-000000000000",
+  "date": "2026-05-15",
+  "covers": 4,
+  "return_totals": false,
+  "booking_guid": null,
+  "table_ids": [],
+  "override_duration": null
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "day_message": "",
+  "session_message": "",
+  "availability_list": [
+    {
+      "start_time": "17:00:00",
+      "end_time": "18:30:00",
+      "is_available": true,
+      "slot_colour": "#00FF00",
+      "slot_text_colour": "#000000"
+    }
+  ],
+  "available_promotions_list": []
+}
+```
+
+**Error Responses:**
+- `"Requested date [date] is more than 10 years in the future"` - Date too far in future
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"Session GUID: [guid] location id: [id]. Session is not valid for given location and date."` - Invalid session
+
+---
+
+### 4. Make Booking
+**Endpoint:** `POST /api/DBXWebApi/MakeBooking`
+
+**Description:** Creates a new pending booking.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "session_guid": "00000000-0000-0000-0000-000000000000",
+  "booking_datetime": "2026-05-15T19:00:00",
+  "covers": 4,
+  "booking_source": "Website",
+  "promotion_guid": null,
+  "override_duration": null,
+  "booking_guid_list": []
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
+  "deposit_due": 50.00,
+  "deposit_per_cover": true,
+  "deposit_per_cover_amount": 12.50,
+  "deposit_paid": 0.00,
+  "deposit_outstanding": 50.00,
+  "deposit_name": "Deposit Required",
+  "deposit_description": "A deposit is required to confirm this booking",
+  "preauth_required": false,
+  "available_promotion_list": []
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"Location GUID: [guid] location id: [id]. Location is not present or doesnt allow web."` - Invalid location
+- `"Invalid Session"` - Session GUID not valid
+- `"Booking date time is in the past"` - Cannot book in past
+- `"Booking cannot be made this close to its start time"` - Web cut-off time exceeded
+- `"Online Bookings are not permitted less than [X] mins before the start of session"` - Session cut-off exceeded
+- `"Online bookings are not permitted less than [X] day(s) in advance"` - Booking too soon
+- `"Online bookings are not permitted for more than [X] people."` - Exceeds max covers
+- `"Online bookings are not permitted more than [X] months in advance"` - Booking too far ahead
+- `"Location closed"` - Location has a stop message
+- `"Total covers for time slot would be exceeded"` - Time slot full
+- `"Total covers for session would be exceeded"` - Session full
+- `"Invalid Promotion"` - Promotion not valid for this booking
+
+---
+
+### 5. Add Customer
+**Endpoint:** `POST /api/DBXWebApi/AddCustomer`
+
+**Description:** Adds customer details to a pending booking and confirms it.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "session_guid": "00000000-0000-0000-0000-000000000000",
+  "booking_datetime": "2026-05-15T19:00:00",
+  "covers": 4,
+  "customer_details": {
+    "forename": "John",
+    "surname": "Doe",
+    "email": "john@example.com",
+    "phone": "07700900000",
+    "consent": 1,
+    "customer_message": "Birthday celebration",
+    "member_id": null,
+    "swipe_id": null,
+    "booking_guid": null,
+    "customer_tag_guids": ["00000000-0000-0000-0000-000000000000"]
+  },
+  "booking_message": "Special occasion",
+  "guest_request": "Window table if possible",
+  "booking_source": "Website",
+  "promotion_guid": null,
+  "booking_tags": [
+    {
+      "booking_tag_guid": "00000000-0000-0000-0000-000000000000",
+      "guest_name": "John Doe"
+    }
+  ],
+  "deposit_amount": 0,
+  "deposit_reference": null,
+  "deposit_processor": null,
+  "advert": null,
+  "referrer": null,
+  "promotion": null,
   "suppress_email": false,
   "suppress_sms": false
 }
@@ -71,58 +256,36 @@ Content-Type: application/json
 ```json
 {
   "succeeded": true,
-  "error_message": ""
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Booking for guid: [guid] not found"` - Booking doesn't exist
-- `"Booking delete failed"` - Booking status prevents deletion
-
----
-
-### 3. Get Promotions
-**Endpoint:** `POST /api/DBXWebApi/GetPromotions`
-
-**Description:** Retrieves available promotions for a booking.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "date": "2026-05-15",
-  "covers": 4,
-  "session_guid": "00000000-0000-0000-0000-000000000000"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
   "error_message": "",
-  "available_promotions_list": [
-    {
-      "promotion_guid": "00000000-0000-0000-0000-000000000000",
-      "promotion_label": "Summer Special",
-      "promotion_description": "20% off for groups of 4+",
-      "promotion_colour": "#FF5733"
-    }
-  ]
+  "booking_guid": "00000000-0000-0000-0000-000000000000",
+  "deposit_due": 50.00,
+  "deposit_per_cover": true,
+  "deposit_per_cover_amount": 12.50,
+  "deposit_paid": 0.00,
+  "deposit_outstanding": 50.00,
+  "deposit_name": "Deposit Required",
+  "deposit_description": "A deposit is required",
+  "preauth_required": false
 }
 ```
 
 **Error Responses:**
 - `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"No Location record Matches given LocationGuid"` - Location doesn't exist
+- `"No pending_booking_guid supplied"` - Booking GUID required
+- `"booking not found for supplied pending_booking_guid: [guid]"` - Booking doesn't exist
+- `"This booking has been deleted"` - Booking status is 255
+- `"Preauth token cannot be null"` - Token required if provided
+- `"No customer details supplied"` - Customer data required
+- `"Must supply a surname"` - Surname required
+- `"Must supply a forename"` - Forename required if no member ID
+- `"Invalid email address"` - Email validation failed
+- `"member_id/surname not found"` - Member not found
+- `"swipe_id/surname not found"` - Swipe ID not found
+- `"Invalid Promotion"` - Promotion not valid for booking
 
 ---
 
-### 4. Get Booking
+### 6. Get Booking
 **Endpoint:** `POST /api/DBXWebApi/GetBooking`
 
 **Description:** Retrieves details of a specific booking including deposit information and status metadata.
@@ -210,357 +373,16 @@ Content-Type: application/json
 
 ---
 
-### 5. Get Locations
-**Endpoint:** `POST /api/DBXWebApi/GetLocations`
+### 7. Delete Booking
+**Endpoint:** `POST /api/DBXWebApi/DeleteBooking`
 
-**Description:** Retrieves all web-enabled locations for a site.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "site_guid": "00000000-0000-0000-0000-000000000000"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "site": "Main Restaurant",
-  "time_zone": "Europe/London",
-  "start_of_day": "06:00:00",
-  "default_start_of_day": false,
-  "loyalty_site_id": 123,
-  "locations": [
-    {
-      "location_guid": "00000000-0000-0000-0000-000000000000",
-      "location": "Main Floor",
-      "advanced_months": 6,
-      "max_covers": 30,
-      "cut_off": 30
-    }
-  ]
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"No site Matches for GUID"` - Site doesn't exist
-- `"Fatal in GetLocations"` - Server error
-
----
-
-### 6. Get Pre-Auth Details
-**Endpoint:** `POST /api/DBXWebApi/GetPreAuthDetails`
-
-**Description:** Retrieves payment processor pre-authentication details for a site.
+**Description:** Deletes a pending or in-progress booking.
 
 **Request:**
 ```json
 {
   "api_key": "00000000-0000-0000-0000-000000000000",
-  "site_guid": "00000000-0000-0000-0000-000000000000"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "elavon_secret_key": "secret_key_value",
-  "elavon_public_key": "public_key_value",
-  "elavon_merchant_alias": "MERCHANT123",
-  "elavon_processor_id": "PROC001",
-  "elavon_api_url": "https://api.elavon.com",
-  "elavon_hpp_url": "https://hpp.elavon.com"
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"No site Matches for GUID"` - Site doesn't exist
-
----
-
-### 7. Get Sites
-**Endpoint:** `POST /api/DBXWebApi/GetSites`
-
-**Description:** Retrieves all available sites for a client.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "client": "Restaurant Group Name",
-  "loyalty_brand_id": 45,
-  "sites": [
-    {
-      "site_id": 1,
-      "site_name": "London Branch",
-      "site_guid": "00000000-0000-0000-0000-000000000000"
-    }
-  ]
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-
----
-
-### 8. Get Sessions
-**Endpoint:** `POST /api/DBXWebApi/GetSessions`
-
-**Description:** Retrieves available sessions for a specific date and location.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "date": "2026-05-15"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "day_message": "Busy evening expected",
-  "session_list": [
-    {
-      "session_guid": "00000000-0000-0000-0000-000000000000",
-      "session_friendly_name": "Lunch Service",
-      "first_time_slot": "12:00:00",
-      "last_time_slot": "14:30:00",
-      "session_message": "Lunch only on weekdays"
-    }
-  ]
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"Location GUID: [guid] location id: [id]. Location is not present or doesnt allow web."` - Invalid location
-- `"No Sessions"` - No sessions available for date
-
----
-
-### 9. Get Sessions Range
-**Endpoint:** `POST /api/DBXWebApi/GetSessionsRange`
-
-**Description:** Retrieves available sessions for a date range.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "date_from": "2026-05-15",
-  "date_to": "2026-05-22"
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "days": [
-    {
-      "date": "2026-05-15",
-      "day_message": "Fully booked",
-      "day_bookings_stopped": false,
-      "sessions": [
-        {
-          "session_guid": "00000000-0000-0000-0000-000000000000",
-          "session_friendly_name": "Dinner",
-          "first_time_slot": "17:00:00",
-          "last_time_slot": "22:00:00",
-          "session_message": "",
-          "session_bookings_stopped": false
-        }
-      ]
-    }
-  ]
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"Start date must be before end date"` - Invalid date range
-
----
-
-### 10. Get Availability
-**Endpoint:** `POST /api/DBXWebApi/GetAvailability`
-
-**Description:** Retrieves available time slots for a booking.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "session_guid": "00000000-0000-0000-0000-000000000000",
-  "date": "2026-05-15",
-  "covers": 4,
-  "return_totals": false,
-  "booking_guid": null,
-  "table_ids": [],
-  "override_duration": null
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "day_message": "",
-  "session_message": "",
-  "availability_list": [
-    {
-      "start_time": "17:00:00",
-      "end_time": "18:30:00",
-      "is_available": true,
-      "slot_colour": "#00FF00",
-      "slot_text_colour": "#000000"
-    }
-  ],
-  "available_promotions_list": []
-}
-```
-
-**Error Responses:**
-- `"Requested date [date] is more than 10 years in the future"` - Date too far in future
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"Session GUID: [guid] location id: [id]. Session is not valid for given location and date."` - Invalid session
-
----
-
-### 11. Make Booking
-**Endpoint:** `POST /api/DBXWebApi/MakeBooking`
-
-**Description:** Creates a new pending booking.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "session_guid": "00000000-0000-0000-0000-000000000000",
-  "booking_datetime": "2026-05-15T19:00:00",
-  "covers": 4,
-  "booking_source": "Website",
-  "promotion_guid": null,
-  "override_duration": null,
-  "booking_guid_list": []
-}
-```
-
-**Response:**
-```json
-{
-  "succeeded": true,
-  "error_message": "",
-  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
-  "deposit_due": 50.00,
-  "deposit_per_cover": true,
-  "deposit_per_cover_amount": 12.50,
-  "deposit_paid": 0.00,
-  "deposit_outstanding": 50.00,
-  "deposit_name": "Deposit Required",
-  "deposit_description": "A deposit is required to confirm this booking",
-  "preauth_required": false,
-  "available_promotion_list": []
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"Invalid Client"` - Client GUID not found
-- `"Location GUID: [guid] location id: [id]. Location is not present or doesnt allow web."` - Invalid location
-- `"Invalid Session"` - Session GUID not valid
-- `"Booking date time is in the past"` - Cannot book in past
-- `"Booking cannot be made this close to its start time"` - Web cut-off time exceeded
-- `"Online Bookings are not permitted less than [X] mins before the start of session"` - Session cut-off exceeded
-- `"Online bookings are not permitted less than [X] day(s) in advance"` - Booking too soon
-- `"Online bookings are not permitted for more than [X] people."` - Exceeds max covers
-- `"Online bookings are not permitted more than [X] months in advance"` - Booking too far ahead
-- `"Location closed"` - Location has a stop message
-- `"Total covers for time slot would be exceeded"` - Time slot full
-- `"Total covers for session would be exceeded"` - Session full
-- `"Invalid Promotion"` - Promotion not valid for this booking
-
----
-
-### 12. Add Customer
-**Endpoint:** `POST /api/DBXWebApi/AddCustomer`
-
-**Description:** Adds customer details to a pending booking and confirms it.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000",
-  "location_guid": "00000000-0000-0000-0000-000000000000",
-  "session_guid": "00000000-0000-0000-0000-000000000000",
-  "booking_datetime": "2026-05-15T19:00:00",
-  "covers": 4,
-  "customer_details": {
-    "forename": "John",
-    "surname": "Doe",
-    "email": "john@example.com",
-    "phone": "07700900000",
-    "consent": 1,
-    "customer_message": "Birthday celebration",
-    "member_id": null,
-    "swipe_id": null,
-    "booking_guid": null,
-    "customer_tag_guids": ["00000000-0000-0000-0000-000000000000"]
-  },
-  "booking_message": "Special occasion",
-  "guest_request": "Window table if possible",
-  "booking_source": "Website",
-  "promotion_guid": null,
-  "booking_tags": [
-    {
-      "booking_tag_guid": "00000000-0000-0000-0000-000000000000",
-      "guest_name": "John Doe"
-    }
-  ],
-  "deposit_amount": 0,
-  "deposit_reference": null,
-  "deposit_processor": null,
-  "advert": null,
-  "referrer": null,
-  "promotion": null,
+  "booking_guid": "00000000-0000-0000-0000-000000000000",
   "suppress_email": false,
   "suppress_sms": false
 }
@@ -570,71 +392,18 @@ Content-Type: application/json
 ```json
 {
   "succeeded": true,
-  "error_message": "",
-  "booking_guid": "00000000-0000-0000-0000-000000000000",
-  "deposit_due": 50.00,
-  "deposit_per_cover": true,
-  "deposit_per_cover_amount": 12.50,
-  "deposit_paid": 0.00,
-  "deposit_outstanding": 50.00,
-  "deposit_name": "Deposit Required",
-  "deposit_description": "A deposit is required",
-  "preauth_required": false
-}
-```
-
-**Error Responses:**
-- `"Invalid api_key"` - API key validation failed
-- `"No pending_booking_guid supplied"` - Booking GUID required
-- `"booking not found for supplied pending_booking_guid: [guid]"` - Booking doesn't exist
-- `"This booking has been deleted"` - Booking status is 255
-- `"Preauth token cannot be null"` - Token required if provided
-- `"No customer details supplied"` - Customer data required
-- `"Must supply a surname"` - Surname required
-- `"Must supply a forename"` - Forename required if no member ID
-- `"Invalid email address"` - Email validation failed
-- `"member_id/surname not found"` - Member not found
-- `"swipe_id/surname not found"` - Swipe ID not found
-- `"Invalid Promotion"` - Promotion not valid for booking
-
----
-
-### 13. Update Customer
-**Endpoint:** `POST /api/DBXWebApi/UpdateCustomer`
-
-**Description:** Updates customer information on a booking.
-
-**Request:**
-```json
-{
-  "api_key": "00000000-0000-0000-0000-000000000000",
-  "customer_guid": "00000000-0000-0000-0000-000000000000",
-  "booking_guid": "00000000-0000-0000-0000-000000000000",
-  "consent": 1,
-  "forename": "Jane",
-  "surname": "Doe",
-  "email": "jane@example.com",
-  "phone": "07700900001"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
   "error_message": ""
 }
 ```
 
 **Error Responses:**
-- `"Api key required"` - API key missing
-- `"Both customer and booking guid cannot both be unspecified"` - At least one GUID required
-- `"Consent field required in request"` - Consent value required
 - `"Invalid api_key"` - API key validation failed
+- `"Booking for guid: [guid] not found"` - Booking doesn't exist
+- `"Booking delete failed"` - Booking status prevents deletion
 
 ---
 
-### 14. Update Booking
+### 8. Update Booking
 **Endpoint:** `POST /api/DBXWebApi/UpdateBooking`
 
 **Description:** Updates booking details including date, time, covers, and notes.
@@ -688,7 +457,7 @@ Content-Type: application/json
 
 ---
 
-### 15. Update Booking Confirmation Status
+### 9. Update Booking Confirmation Status
 **Endpoint:** `POST /api/DBXWebApi/UpdateBookingConfirmationStatus`
 
 **Description:** Updates the confirmation status of a booking.
@@ -726,7 +495,7 @@ Content-Type: application/json
 
 ---
 
-### 16. Add Deposit
+### 10. Add Deposit
 **Endpoint:** `POST /api/DBXWebApi/AddDeposit`
 
 **Description:** Records a deposit payment for a booking.
@@ -762,7 +531,122 @@ Content-Type: application/json
 
 ---
 
-### 17. Get Booking Tags
+### 11. Update Customer
+**Endpoint:** `POST /api/DBXWebApi/UpdateCustomer`
+
+**Description:** Updates customer information on a booking.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "customer_guid": "00000000-0000-0000-0000-000000000000",
+  "booking_guid": "00000000-0000-0000-0000-000000000000",
+  "consent": 1,
+  "forename": "Jane",
+  "surname": "Doe",
+  "email": "jane@example.com",
+  "phone": "07700900001"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "error_message": ""
+}
+```
+
+**Error Responses:**
+- `"Api key required"` - API key missing
+- `"Both customer and booking guid cannot both be unspecified"` - At least one GUID required
+- `"Consent field required in request"` - Consent value required
+- `"Invalid api_key"` - API key validation failed
+
+---
+
+### 12. Get Promotions
+**Endpoint:** `POST /api/DBXWebApi/GetPromotions`
+
+**Description:** Retrieves available promotions for a booking.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "date": "2026-05-15",
+  "covers": 4,
+  "session_guid": "00000000-0000-0000-0000-000000000000"
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "available_promotions_list": [
+    {
+      "promotion_guid": "00000000-0000-0000-0000-000000000000",
+      "promotion_label": "Summer Special",
+      "promotion_description": "20% off for groups of 4+",
+      "promotion_colour": "#FF5733"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"No Location record Matches given LocationGuid"` - Location doesn't exist
+
+---
+
+### 13. Get Booking Sources
+**Endpoint:** `POST /api/DBXWebApi/GetBookingSources`
+
+**Description:** Retrieves available booking sources for a client.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000"
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "booking_source_list": [
+    {
+      "source_id": 1,
+      "source_name": "Website",
+      "source_guid": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "source_id": 2,
+      "source_name": "Phone",
+      "source_guid": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `"Invalid Api Key"` - API key validation failed
+- `"Invalid Client Number provided"` - Client GUID not found
+- `"Fatal in GetBookingSources"` - Server error
+
+---
+
+### 14. Get Booking Tags
 **Endpoint:** `POST /api/DBXWebApi/GetBookingTags`
 
 **Description:** Retrieves available booking tags for a client.
@@ -806,7 +690,7 @@ Content-Type: application/json
 
 ---
 
-### 18. Get Customer Tags
+### 15. Get Customer Tags
 **Endpoint:** `POST /api/DBXWebApi/GetCustomerTags`
 
 **Description:** Retrieves available customer tags for a client.
@@ -850,16 +734,17 @@ Content-Type: application/json
 
 ---
 
-### 19. Get Booking Sources
-**Endpoint:** `POST /api/DBXWebApi/GetBookingSources`
+### 16. Get Locations
+**Endpoint:** `POST /api/DBXWebApi/GetLocations`
 
-**Description:** Retrieves available booking sources for a client.
+**Description:** Retrieves all web-enabled locations for a site.
 
 **Request:**
 ```json
 {
   "api_key": "00000000-0000-0000-0000-000000000000",
-  "client_guid": "00000000-0000-0000-0000-000000000000"
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "site_guid": "00000000-0000-0000-0000-000000000000"
 }
 ```
 
@@ -868,25 +753,140 @@ Content-Type: application/json
 {
   "succeeded": true,
   "error_message": "",
-  "booking_source_list": [
+  "site": "Main Restaurant",
+  "time_zone": "Europe/London",
+  "start_of_day": "06:00:00",
+  "default_start_of_day": false,
+  "loyalty_site_id": 123,
+  "locations": [
     {
-      "source_id": 1,
-      "source_name": "Website",
-      "source_guid": "00000000-0000-0000-0000-000000000000"
-    },
-    {
-      "source_id": 2,
-      "source_name": "Phone",
-      "source_guid": "00000000-0000-0000-0000-000000000000"
+      "location_guid": "00000000-0000-0000-0000-000000000000",
+      "location": "Main Floor",
+      "advanced_months": 6,
+      "max_covers": 30,
+      "cut_off": 30
     }
   ]
 }
 ```
 
 **Error Responses:**
-- `"Invalid Api Key"` - API key validation failed
-- `"Invalid Client Number provided"` - Client GUID not found
-- `"Fatal in GetBookingSources"` - Server error
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"No site Matches for GUID"` - Site doesn't exist
+- `"Fatal in GetLocations"` - Server error
+
+---
+
+### 17. Get Sessions Range
+**Endpoint:** `POST /api/DBXWebApi/GetSessionsRange`
+
+**Description:** Retrieves available sessions for a date range.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "client_guid": "00000000-0000-0000-0000-000000000000",
+  "location_guid": "00000000-0000-0000-0000-000000000000",
+  "date_from": "2026-05-15",
+  "date_to": "2026-05-22"
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "days": [
+    {
+      "date": "2026-05-15",
+      "day_message": "Fully booked",
+      "day_bookings_stopped": false,
+      "sessions": [
+        {
+          "session_guid": "00000000-0000-0000-0000-000000000000",
+          "session_friendly_name": "Dinner",
+          "first_time_slot": "17:00:00",
+          "last_time_slot": "22:00:00",
+          "session_message": "",
+          "session_bookings_stopped": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"Invalid Client"` - Client GUID not found
+- `"Start date must be before end date"` - Invalid date range
+
+---
+
+### 18. Get Pre-Auth Details
+**Endpoint:** `POST /api/DBXWebApi/GetPreAuthDetails`
+
+**Description:** Retrieves payment processor pre-authentication details for a site.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "site_guid": "00000000-0000-0000-0000-000000000000"
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": "",
+  "elavon_secret_key": "secret_key_value",
+  "elavon_public_key": "public_key_value",
+  "elavon_merchant_alias": "MERCHANT123",
+  "elavon_processor_id": "PROC001",
+  "elavon_api_url": "https://api.elavon.com",
+  "elavon_hpp_url": "https://hpp.elavon.com"
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"No site Matches for GUID"` - Site doesn't exist
+
+---
+
+### 19. Keep Booking Alive
+**Endpoint:** `POST /api/DBXWebApi/KeepBookingAlive`
+
+**Description:** Extends the time for a booking that is currently in progress.
+
+**Request:**
+```json
+{
+  "api_key": "00000000-0000-0000-0000-000000000000",
+  "pending_booking_guid": "00000000-0000-0000-0000-000000000000",
+  "keep_alive_minutes": 15
+}
+```
+
+**Response:**
+```json
+{
+  "succeeded": true,
+  "error_message": ""
+}
+```
+
+**Error Responses:**
+- `"Invalid api_key"` - API key validation failed
+- `"Booking not found"` - Booking GUID doesn't exist
+- `"Booking already deleted"` - Booking status is 255 or not Booked/InProgress
+- `"Booking not in progress"` - Booking status is not InProgress
+- `"Failed to keep booking alive"` - Database update failed
 
 ---
 
