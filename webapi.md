@@ -24,7 +24,7 @@ Content-Type: application/json
 ### Get Sites
 **Endpoint:** `POST /api/DBXWebApi/GetSites`
 
-**Description:** Returns sites for a client.
+**Description:** Retrieves all sites for a client. For each site, a list of bookable locations is returned. For each location, information on how far in advance a booking can be made, in months, (advanced_months), the maximum permissible party size (max-covers) and how close to the arrival time a booking can be made, in minutes (cut_off) is also returned.
 
 **Request:**
 ```json
@@ -68,7 +68,7 @@ Content-Type: application/json
 ### Get Sessions
 **Endpoint:** `POST /api/DBXWebApi/GetSessions`
 
-**Description:** Returns sessions for a location and date.
+**Description:** Retrieves available sessions for a specific date and location. The first and last time slots returned by GetSessions are for information purposes only and should not be used as an indication of availability.
 
 **Request:**
 ```json
@@ -103,7 +103,7 @@ Content-Type: application/json
 ### Get Availability
 **Endpoint:** `POST /api/DBXWebApi/GetAvailability`
 
-**Description:** Returns availability for a session/location/date/covers.
+**Description:** Retrieves available time slots for a booking. If rescanning for availability as part of an update booking (see Update Booking) then the booking’s booking_guid can be passed into request. This will remove the booking from the availability scan to stop it from blocking itself. An available_promotion_list is returned. Each promotion featured in this list will, theoretically, be bookable in one or more of the timenslots returned; however, general availability may stop a promotion from actually being returned as bookable.  A corresponding list of promotion_guids is returned for each time slot. If an optional, valid promotion_guid is passed in as part of the request then the available promotion list in the response will only include this promotion. When a promotion_guid is passed into the request then the promotion_guids list returned in the availability_list in the response will always be blank; however, the is_available will be false for a time slot if does not meet the criteria for the supplied promotion.
 
 **Request:**
 ```json
@@ -168,7 +168,7 @@ Content-Type: application/json
 ### Make Booking
 **Endpoint:** `POST /api/DBXWebApi/MakeBooking`
 
-**Description:** Create a booking.
+**Description:** Creates a new pending booking. The pending_booking_guid returned in the response is confirmation that availability will be held for 10 minutes. The user therefore has 10 minutes from a successful MakeBooking response to call AddCustomer to complete the booking.
 
 **Request:**
 ```json
@@ -217,7 +217,7 @@ Content-Type: application/json
 ### Add Customer
 **Endpoint:** `POST /api/DBXWebApi/AddCustomer`
 
-**Description:** Add customer details to a pending booking or create a booking with customer.
+**Description:** Adds customer details to a pending booking and confirms it. Consent=1 means that a guest is happy for their details to be retained for marketing purposes. Consent=0 means that a guest is not happy for their details to be retained for marketing purposes. Suppress Email and Suppress SMS stop the default confirmation email/sms from being sent (and should be used if confirmation is being handled separately to avoid duplication).
 
 **Request:**
 ```json
@@ -287,7 +287,7 @@ Content-Type: application/json
 ### Get Booking
 **Endpoint:** `POST /api/DBXWebApi/GetBooking`
 
-**Description:** Get booking details by booking GUID.
+**Description:** Retrieves details of a specific booking including deposit information and status metadata.
 
 **Request:**
 ```json
