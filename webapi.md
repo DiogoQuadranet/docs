@@ -788,16 +788,135 @@ Content-Type: application/json
 
 ---
 
-## Common Response Fields
-(Responses retained as previously documented; for detailed responses see the repo examples.)
-
 ## Date/Time Formats
-(As previously documented.)
 
-## Validation Rules / Troubleshooting / Rate Limiting / Support
-(As previously documented.)
+- **Date Format:** `YYYY-MM-DD` (ISO 8601)
+  - Example: `2026-05-15`
+
+- **DateTime Format:** `YYYY-MM-DDTHH:mm:ss` (ISO 8601)
+  - Example: `2026-05-15T19:00:00`
+
+- **TimeSpan Format:** `HH:mm:ss`
+  - Example: `19:00:00`
 
 ---
+
+## Booking Status Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 1 | Booked | Confirmed booking |
+| 2 | InProgress | Customer currently dining |
+| 3 | Seated | Customer seated |
+| 255 | Deleted | Booking has been deleted |
+
+---
+
+## Confirmation Status Codes
+
+| Code | Status |
+|------|--------|
+| 0 | Unconfirmed |
+| 1 | Confirmed |
+| 2 | Auto Confirmed |
+
+---
+
+## Deposit Type Values
+
+| Code | Type | Description |
+|------|------|-------------|
+| 1 | Fixed | Fixed deposit amount |
+| 2 | ByCovers | Per-cover deposit amount |
+
+---
+
+## HTTP Status Codes
+
+| Code | Meaning |
+|------|---------|
+| 200 | OK - Request successful |
+| 400 | Bad Request - Invalid request format |
+| 500 | Internal Server Error - Server error occurred |
+
+---
+
+## Authentication Notes
+
+1. All requests must include a valid `api_key` in the request body
+2. The API key is validated against the PayAtTable repository
+3. Invalid or missing API keys will return: `"Invalid api_key"`
+4. API keys must be valid GUIDs in the format: `00000000-0000-0000-0000-000000000000`
+
+---
+
+## Validation Rules
+
+### Booking Dates & Times
+- Booking datetime cannot be in the past
+- Booking must respect web cutoff times (time before start time)
+- Booking must respect cutoff days (minimum advance booking)
+- Max advance booking (in months) is configurable per location
+
+### Covers
+- Must be positive integer
+- Cannot exceed max covers per location
+- Must not exceed session capacity
+- Must not exceed timeslot capacity
+
+### Customer Details
+- Surname is required
+- Forename is required (unless member ID provided)
+- Email must be valid format (if validation is enabled)
+- Consent value required for UpdateCustomer
+
+### Promotions
+- Promotion GUID must be valid for the booking date/time/location/session
+- Promotion must be active and applicable
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue:** "Invalid api_key"
+- **Solution:** Verify API key is correct GUID format and is registered in the system
+
+**Issue:** "Invalid Client"
+- **Solution:** Ensure client_guid matches a registered client in the system
+
+**Issue:** "Booking cannot be made this close to its start time"
+- **Solution:** Check location's WebCutOff setting; increase advance booking time
+
+**Issue:** "Online bookings are not permitted less than X day(s) in advance"
+- **Solution:** Check location's WebCutOffDays setting; allow more advance booking time
+
+**Issue:** "Total covers for session would be exceeded"
+- **Solution:** Session is fully booked; suggest alternative time or reduce covers
+
+**Issue:** "Location closed"
+- **Solution:** Day message indicates location is stopped; choose different date
+
+---
+
+## Rate Limiting
+
+Currently, there are no rate limits enforced. However, it's recommended to:
+- Implement reasonable request spacing
+- Cache responses where possible
+- Batch requests when appropriate
+
+---
+
+## Support
+
+For API support or issues, contact the development team with:
+- API key used
+- Request/response JSON
+- Timestamp of request
+- Error message received
+
 
 <!-- Redundant schema matrix retained in source temporarily; endpoint-level schemas above are canonical.
 
